@@ -6,3 +6,10 @@ CREATE TABLE admin (
                     password VARCHAR(255) NOT NULL
 
 );
+
+CREATE TABLE departments (
+                             department_id VARCHAR(10) PRIMARY KEY ,
+                             department_name VARCHAR(255) NOT NULL,
+                             capacity INT NOT NULL,
+                             current_count INT NOT NULL DEFAULT 0
+);
