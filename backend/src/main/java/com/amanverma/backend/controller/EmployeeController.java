@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -42,6 +44,17 @@ public class EmployeeController {
         }
         EmployeeResponse employeeResponse = employeeService.getEmployeeById(empId);
         return new ResponseEntity<>(employeeResponse, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EmployeeResponse>> getAllEmployees(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtHelper.extractEmail(jwtToken);
+        if(!jwtHelper.validateToken(jwtToken, email)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        List<EmployeeResponse> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
     }
 
 }

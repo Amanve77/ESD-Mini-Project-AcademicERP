@@ -12,6 +12,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
@@ -34,6 +37,13 @@ public class EmployeeService {
             throw new EntityNotFoundException("Employee not found with ID: " + empId);
         }
         return employeeMapper.toResponse(employee);
+    }
+
+    public List<EmployeeResponse> getAllEmployees() {
+        List<Employee> employees = employeeRepo.findAll();
+        return employees.stream()
+                .map(employeeMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
 
