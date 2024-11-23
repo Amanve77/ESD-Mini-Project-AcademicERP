@@ -21,8 +21,8 @@ public class Department {
     String departmentName;
 
     @Column(name = "capacity", nullable = false)
-    Long capacity;
+    Integer capacity;
 
     @Column(name = "current_count", nullable = false)
-    Long currentCount;
+    Integer currentCount;
 }
