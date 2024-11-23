@@ -2,6 +2,7 @@ package com.amanverma.backend.controller;
 
 
 import com.amanverma.backend.dto.EmployeeRequest;
+import com.amanverma.backend.dto.EmployeeResponse;
 import com.amanverma.backend.entity.Employee;
 import com.amanverma.backend.helper.JWTHelper;
 import com.amanverma.backend.service.EmployeeService;
@@ -29,8 +30,18 @@ public class EmployeeController {
         if(!jwtHelper.validateToken(jwtToken, email)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
-
         return ResponseEntity.ok((employeeService.createEmployee(employeeRequest)));
-
     }
+
+    @GetMapping("/{empId}")
+    public ResponseEntity<EmployeeResponse> getEmployeeById(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId) {
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtHelper.extractEmail(jwtToken);
+        if(!jwtHelper.validateToken(jwtToken, email)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        EmployeeResponse employeeResponse = employeeService.getEmployeeById(empId);
+        return new ResponseEntity<>(employeeResponse, HttpStatus.OK);
+    }
+
 }

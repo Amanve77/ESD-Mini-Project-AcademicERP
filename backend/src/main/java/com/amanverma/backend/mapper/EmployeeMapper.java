@@ -1,6 +1,7 @@
 package com.amanverma.backend.mapper;
 
 import com.amanverma.backend.dto.EmployeeRequest;
+import com.amanverma.backend.dto.EmployeeResponse;
 import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.entity.Employee;
 import com.amanverma.backend.service.DepartmentService;
@@ -27,6 +28,18 @@ public class EmployeeMapper {
                 .photographPath(request.photographPath())
                 .department(department)
                 .build();
+    }
+
+    public EmployeeResponse toResponse(Employee employee) {
+        return new EmployeeResponse(
+                employee.getEmployeeId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail(),
+                employee.getTitle(),
+                employee.getPhotographPath(),
+                employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null
+        );
     }
 
 }
