@@ -67,5 +67,13 @@ public class EmployeeService {
         return employeeMapper.toResponse(updatedEmployee);
     }
 
+    public void deleteEmployee(String empId) {
+        Employee existingEmployee = employeeRepo.findByEmpId(empId);
+        if (existingEmployee == null) {
+            throw new EntityNotFoundException("Employee not found with ID: " + empId);
+        }
+        employeeRepo.delete(existingEmployee);
+    }
+
 
 }

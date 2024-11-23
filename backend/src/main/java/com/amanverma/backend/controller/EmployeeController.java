@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,9 +57,25 @@ public class EmployeeController {
     }
 
     @PutMapping("/{empId}")
-    public ResponseEntity<EmployeeResponse> updateEmployee(@PathVariable String empId, @RequestBody EmployeeRequest employeeRequest) {
+    public ResponseEntity<EmployeeResponse> updateEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId, @RequestBody EmployeeRequest employeeRequest) {
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtHelper.extractEmail(jwtToken);
+        if(!jwtHelper.validateToken(jwtToken, email)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
         EmployeeResponse employeeResponse = employeeService.updateEmployee(empId, employeeRequest);
         return new ResponseEntity<>(employeeResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{empId}")
+    public ResponseEntity<String> deleteEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId) {
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtHelper.extractEmail(jwtToken);
+        if(!jwtHelper.validateToken(jwtToken, email)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        employeeService.deleteEmployee(empId);
+        return new ResponseEntity<>("Employee deleted successfully", HttpStatus.OK);
     }
 
 }
