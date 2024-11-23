@@ -3,6 +3,7 @@ package com.amanverma.backend.service;
 
 import com.amanverma.backend.dto.EmployeeRequest;
 import com.amanverma.backend.dto.EmployeeResponse;
+import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.entity.Employee;
 import com.amanverma.backend.helper.EncryptionService;
 import com.amanverma.backend.helper.JWTHelper;
@@ -22,8 +23,9 @@ public class EmployeeService {
 
     private final EmployeeMapper employeeMapper;
     private final EmployeeRepo employeeRepo;
-    private final EncryptionService encryptionService;
-    private final JWTHelper jwtHelper;
+    private final DepartmentService departmentService;
+
+
 
     public String createEmployee(EmployeeRequest employeeRequest) {
         Employee employee = employeeMapper.toEntity(employeeRequest);
@@ -44,6 +46,25 @@ public class EmployeeService {
         return employees.stream()
                 .map(employeeMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public EmployeeResponse updateEmployee(String empId, EmployeeRequest request) {
+        Employee existingEmployee = employeeRepo.findByEmpId(empId);
+        if (existingEmployee == null) {
+            throw new EntityNotFoundException("Employee not found with ID: " + empId);
+        }
+
+        Department department = departmentService.getByName(request.department());
+
+        existingEmployee.setFirstName(request.firstName());
+        existingEmployee.setLastName(request.lastName());
+        existingEmployee.setEmail(request.email());
+        existingEmployee.setTitle(request.title());
+        existingEmployee.setPhotographPath(request.photographPath());
+        existingEmployee.setDepartment(department);
+
+        Employee updatedEmployee = employeeRepo.save(existingEmployee);
+        return employeeMapper.toResponse(updatedEmployee);
     }
 
 
