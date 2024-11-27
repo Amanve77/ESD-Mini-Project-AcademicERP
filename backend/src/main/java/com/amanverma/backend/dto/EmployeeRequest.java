@@ -25,6 +25,4 @@ public class EmployeeRequest {
 
     private MultipartFile photograph;
 
-    // Getters and Setters
-
 }

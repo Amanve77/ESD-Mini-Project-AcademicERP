@@ -6,7 +6,6 @@ import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.entity.Employee;
 import com.amanverma.backend.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +23,7 @@ public class EmployeeMapper {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .title(request.getTitle())
-                .photographPath(photographPath) // Use path provided
+                .photographPath(photographPath)
                 .department(department)
                 .build();
     }

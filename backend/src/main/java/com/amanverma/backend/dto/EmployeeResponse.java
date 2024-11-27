@@ -6,16 +6,14 @@ import lombok.Setter;
 @Setter
 @Getter
 public class EmployeeResponse {
-    // Getters and Setters
     private String empId;
     private String firstName;
     private String lastName;
     private String email;
     private String title;
-    private String photographPath; // The URL to be returned
+    private String photographPath;
     private String department;
 
-    // Constructor
     public EmployeeResponse(String empId, String firstName, String lastName, String email, String title, String photographPath, String department) {
         this.empId = empId;
         this.firstName = firstName;

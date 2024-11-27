@@ -6,7 +6,7 @@ import Navbar from './Navbar';
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const EmployeeList = () => {
         console.error('Error fetching employees:', err);
         setError('Failed to fetch employees. Please try again later.');
       } finally {
-        setLoading(false); // Stop loading regardless of success or failure
+        setLoading(false); 
       }
     };
 
@@ -65,7 +65,7 @@ const EmployeeList = () => {
         <h2>Employee List</h2>
         <button
           className="btn btn-primary"
-          onClick={() => navigate('/add-employee')} // Navigate to Add Employee form
+          onClick={() => navigate('/add-employee')} 
         >
           Add Employee
         </button>

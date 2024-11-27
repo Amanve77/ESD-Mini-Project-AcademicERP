@@ -1,7 +1,6 @@
 package com.amanverma.backend.service;
 
 import com.amanverma.backend.dto.DepartmentResponse;
-import com.amanverma.backend.dto.EmployeeResponse;
 import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.mapper.DepartmentMapper;
 import com.amanverma.backend.repo.DepartmentRepo;
@@ -19,7 +18,7 @@ public class DepartmentService {
     private final DepartmentMapper departmentMapper;
 
     public Department getByName(String name) {
-        return departmentRepo.findByName(name);  // Assuming you have a method like this in your repository
+        return departmentRepo.findByName(name);
     }
 
     public List<DepartmentResponse> getAllDepartments() {
@@ -28,4 +27,20 @@ public class DepartmentService {
                 .collect(Collectors.toList());
     }
 
+    public void increaseDepartmentCapacity(Department department) {
+        department.setCurrentCount(department.getCurrentCount() + 1);
+        departmentRepo.save(department);
+    }
+
+    public void decreaseDepartmentCapacity(Department department) {
+        department.setCurrentCount(department.getCurrentCount() - 1);
+        departmentRepo.save(department);
+    }
+
+    public void updateDepartmentCapacity(Department oldDepartment, Department newDepartment) {
+        oldDepartment.setCurrentCount(oldDepartment.getCurrentCount() - 1);
+        newDepartment.setCurrentCount(newDepartment.getCurrentCount() + 1);
+        departmentRepo.save(oldDepartment);
+        departmentRepo.save(newDepartment);
+    }
 }

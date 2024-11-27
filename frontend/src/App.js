@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';

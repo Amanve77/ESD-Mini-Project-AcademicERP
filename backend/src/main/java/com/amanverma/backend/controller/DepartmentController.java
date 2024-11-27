@@ -1,7 +1,6 @@
 package com.amanverma.backend.controller;
 
 import com.amanverma.backend.dto.DepartmentResponse;
-import com.amanverma.backend.dto.EmployeeResponse;
 import com.amanverma.backend.helper.JWTHelper;
 import com.amanverma.backend.service.DepartmentService;
 import lombok.RequiredArgsConstructor;

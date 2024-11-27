@@ -76,7 +76,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{empId}")
-    public ResponseEntity<EmployeeResponse> updateEmployee(
+    public ResponseEntity<String> updateEmployee(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
             @PathVariable String empId,
             @ModelAttribute EmployeeRequest employeeRequest
