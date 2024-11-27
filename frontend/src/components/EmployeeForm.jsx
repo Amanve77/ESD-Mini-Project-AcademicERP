@@ -8,18 +8,40 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
   const [email, setEmail] = useState('');
   const [title, setTitle] = useState('');
   const [department, setDepartment] = useState('');
+  const [departments, setDepartments] = useState([]); 
   const [photograph, setPhotograph] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/departments', {
+          headers: {
+            Authorization: `Bearer ${jwtToken || localStorage.getItem('jwtToken')}`,
+          },
+        });
+        console.log('Departments API response:', response.data);
+        if (response.data && Array.isArray(response.data)) {
+          setDepartments(response.data); 
+        } else {
+          throw new Error('Invalid response format for departments');
+        }
+      } catch (err) {
+        console.error('Error fetching departments:', err);
+        setError('Failed to load departments. Please try again.');
+      }
+    };
+
+    fetchDepartments();
+
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
       }
     };
-  }, [imagePreview]);
+  }, [imagePreview, jwtToken]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -69,7 +91,7 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+            Authorization: `Bearer ${jwtToken || localStorage.getItem('jwtToken')}`,
           },
         }
       );
@@ -147,14 +169,24 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Department</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                  />
-                </div>
+                    <label className="form-label">Department</label>
+                    <select
+                        className="form-select"
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                        required
+                    >
+                        <option value="" disabled>
+                        Select a department
+                        </option>
+                        {departments.map((dept) => (
+                        <option key={dept.departmentId} value={dept.departmentName}>
+                            {dept.departmentName}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
+
                 <div className="mb-3">
                   <label className="form-label">Photograph</label>
                   <input
@@ -177,7 +209,11 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
               </div>
             </div>
             <div className="text-center mt-4">
-              <button type="submit" className="btn btn-primary w-50" disabled={loading}>
+              <button
+                type="submit"
+                className="btn btn-primary w-50"
+                disabled={loading || !employeeId || !firstName || !email || !title || !department}
+              >
                 {loading ? 'Saving...' : 'Save Employee'}
               </button>
             </div>

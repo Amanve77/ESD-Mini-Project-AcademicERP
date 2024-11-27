@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -57,6 +58,8 @@ const EmployeeList = () => {
   };
 
   return (
+    <div>
+        <Navbar />
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Employee List</h2>
@@ -141,6 +144,7 @@ const EmployeeList = () => {
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };

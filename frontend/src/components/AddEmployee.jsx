@@ -6,7 +6,7 @@ const AddEmployee = () => {
     const [message, setMessage] = useState("");
 
     const handleSave = (employee) => {
-        setMessage(`Employee ${employee.firstName} added successfully!`);
+        setMessage(`Employee added successfully!`);
         setTimeout(() => setMessage(""), 3000);
     };
 

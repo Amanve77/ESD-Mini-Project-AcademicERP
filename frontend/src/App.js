@@ -8,6 +8,10 @@ import EmployeeList from './components/EmployeeList';
 import EditEmployee from './components/EditEmployee';
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LoginPage />
+  },
 	{
 		path: "/login",
 		element: <LoginPage />,
