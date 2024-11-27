@@ -5,6 +5,7 @@ import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import AddEmployee from './components/AddEmployee';
 import EmployeeList from './components/EmployeeList';
+import EditEmployee from './components/EditEmployee';
 
 const router = createBrowserRouter([
 	{
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/add-employee",
 		element: <AddEmployee />,
+  },
+  {
+    path: "/update-employee/:empId",
+		element: <EditEmployee />,
   }
 ]);
 
