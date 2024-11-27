@@ -1,12 +1,8 @@
 package com.amanverma.backend.service;
 
-
 import com.amanverma.backend.dto.EmployeeRequest;
 import com.amanverma.backend.dto.EmployeeResponse;
-import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.entity.Employee;
-import com.amanverma.backend.helper.EncryptionService;
-import com.amanverma.backend.helper.JWTHelper;
 import com.amanverma.backend.mapper.EmployeeMapper;
 import com.amanverma.backend.repo.EmployeeRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,17 +16,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeService {
 
-
     private final EmployeeMapper employeeMapper;
     private final EmployeeRepo employeeRepo;
     private final DepartmentService departmentService;
 
-
-
-    public String createEmployee(EmployeeRequest employeeRequest) {
-        Employee employee = employeeMapper.toEntity(employeeRequest);
+    public String createEmployee(EmployeeRequest employeeRequest, String photographPath) {
+        Employee employee = employeeMapper.toEntity(employeeRequest, photographPath);
+        employee.setDepartment(departmentService.getByName(employeeRequest.getDepartment()));
         employeeRepo.save(employee);
-        return "Employee created Successfully";
+        return "Employee created successfully";
     }
 
     public EmployeeResponse getEmployeeById(String empId) {
@@ -42,38 +36,33 @@ public class EmployeeService {
     }
 
     public List<EmployeeResponse> getAllEmployees() {
-        List<Employee> employees = employeeRepo.findAll();
-        return employees.stream()
+        return employeeRepo.findAll().stream()
                 .map(employeeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public EmployeeResponse updateEmployee(String empId, EmployeeRequest request) {
+    public EmployeeResponse updateEmployee(String empId, EmployeeRequest request, String newPhotographPath) {
         Employee existingEmployee = employeeRepo.findByEmpId(empId);
         if (existingEmployee == null) {
             throw new EntityNotFoundException("Employee not found with ID: " + empId);
         }
 
-        Department department = departmentService.getByName(request.department());
-
-        existingEmployee.setFirstName(request.firstName());
-        existingEmployee.setLastName(request.lastName());
-        existingEmployee.setEmail(request.email());
-        existingEmployee.setTitle(request.title());
-        existingEmployee.setPhotographPath(request.photographPath());
-        existingEmployee.setDepartment(department);
+        existingEmployee.setFirstName(request.getFirstName());
+        existingEmployee.setLastName(request.getLastName());
+        existingEmployee.setEmail(request.getEmail());
+        existingEmployee.setTitle(request.getTitle());
+        existingEmployee.setPhotographPath(newPhotographPath != null ? newPhotographPath : existingEmployee.getPhotographPath());
+        existingEmployee.setDepartment(departmentService.getByName(request.getDepartment()));
 
         Employee updatedEmployee = employeeRepo.save(existingEmployee);
         return employeeMapper.toResponse(updatedEmployee);
     }
 
     public void deleteEmployee(String empId) {
-        Employee existingEmployee = employeeRepo.findByEmpId(empId);
-        if (existingEmployee == null) {
+        Employee employee = employeeRepo.findByEmpId(empId);
+        if (employee == null) {
             throw new EntityNotFoundException("Employee not found with ID: " + empId);
         }
-        employeeRepo.delete(existingEmployee);
+        employeeRepo.delete(employee);
     }
-
-
 }

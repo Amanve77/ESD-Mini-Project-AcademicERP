@@ -1,28 +1,29 @@
 package com.amanverma.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-public record EmployeeResponse(
+@Setter
+@Getter
+public class EmployeeResponse {
+    // Getters and Setters
+    private String empId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String title;
+    private String photographPath; // The URL to be returned
+    private String department;
 
-        @JsonProperty("employee_id")
-        String empId,
+    // Constructor
+    public EmployeeResponse(String empId, String firstName, String lastName, String email, String title, String photographPath, String department) {
+        this.empId = empId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.title = title;
+        this.photographPath = photographPath;
+        this.department = department;
+    }
 
-        @JsonProperty("first_name")
-        String firstName,
-
-        @JsonProperty("last_name")
-        String lastName,
-
-        @JsonProperty("email")
-        String email,
-
-        @JsonProperty("title")
-        String title,
-
-        @JsonProperty("photograph_path")
-        String photographPath,
-
-        @JsonProperty("department")
-        String department
-) {
 }

@@ -3,7 +3,6 @@ package com.amanverma.backend.service;
 import com.amanverma.backend.entity.Department;
 import com.amanverma.backend.repo.DepartmentRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
