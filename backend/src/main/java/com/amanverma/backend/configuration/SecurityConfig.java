@@ -22,7 +22,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(requestInterceptor)
                 .addPathPatterns()
-                .excludePathPatterns("/api/v1/admin","/api/v1/admin/login");
+                .excludePathPatterns("/api/v1/admin","/api/v1/admin/login","/api/v1/employees/photos/**");
     }
 
     @Bean
