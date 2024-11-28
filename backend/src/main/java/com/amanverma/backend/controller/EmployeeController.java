@@ -36,10 +36,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createEmployee(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @ModelAttribute @Valid EmployeeRequest employeeRequest
-    ) throws IOException {
+    public ResponseEntity<String> createEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @ModelAttribute @Valid EmployeeRequest employeeRequest) throws IOException {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
@@ -49,10 +46,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{empId}")
-    public ResponseEntity<EmployeeResponse> getEmployeeById(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @PathVariable String empId
-    ) {
+    public ResponseEntity<EmployeeResponse> getEmployeeById(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId) {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -65,9 +59,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeResponse>> getAllEmployees(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-    ) {
+    public ResponseEntity<List<EmployeeResponse>> getAllEmployees(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -76,11 +68,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{empId}")
-    public ResponseEntity<String> updateEmployee(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @PathVariable String empId,
-            @ModelAttribute EmployeeRequest employeeRequest
-    ) throws IOException {
+    public ResponseEntity<String> updateEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId, @ModelAttribute EmployeeRequest employeeRequest) throws IOException {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -90,10 +78,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{empId}")
-    public ResponseEntity<String> deleteEmployee(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @PathVariable String empId
-    ) {
+    public ResponseEntity<String> deleteEmployee(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String empId) {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
@@ -103,9 +88,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/photos/{filename}")
-    public ResponseEntity<byte[]> getPhoto(
-            @PathVariable String filename
-    ) {
+    public ResponseEntity<byte[]> getPhoto(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(UPLOAD_DIR, filename);
             byte[] imageBytes = Files.readAllBytes(filePath);
@@ -117,24 +100,20 @@ public class EmployeeController {
         }
     }
 
-
-
     private String savePhotograph(MultipartFile photograph) {
         if (photograph != null && !photograph.isEmpty()) {
             try {
                 String originalFileName = photograph.getOriginalFilename();
                 Path filePath = Paths.get(UPLOAD_DIR, originalFileName);
-                Files.createDirectories(filePath.getParent()); // Ensure directories exist
-                photograph.transferTo(filePath.toFile()); // Save file
-                return filePath.toString(); // Return saved file path
+                Files.createDirectories(filePath.getParent());
+                photograph.transferTo(filePath.toFile());
+                return filePath.toString();
             } catch (IOException e) {
                 throw new RuntimeException("Error saving photograph: " + e.getMessage(), e);
             }
         }
         return null;
     }
-
-
 
     private String buildPhotographUrl(String photographPath) {
         try {

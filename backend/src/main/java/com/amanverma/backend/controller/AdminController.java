@@ -28,7 +28,6 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AdminLogin adminLogin) {
-        System.out.println(adminLogin);
         String token = adminService.login(adminLogin);
 
         if ("Wrong Password or Email".equals(token)) {

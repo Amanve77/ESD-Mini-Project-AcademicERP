@@ -27,9 +27,7 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DepartmentResponse>> getAllDepartments(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
-    ) {
+    public ResponseEntity<List<DepartmentResponse>> getAllDepartments(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!isAuthorized(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

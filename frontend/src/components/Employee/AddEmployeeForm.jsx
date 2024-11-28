@@ -1,62 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useDepartments } from '../../hooks/useDepartments';
+import { saveEmployee } from '../../api/employeeApi';
+import { validateFile } from '../../utils/fileUtils';
+import DepartmentSelect from '../Department/DepartmentSelect';
 
-const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
+const AddEmployeeForm = ({ onSave = () => {}, jwtToken }) => {
+  const { departments, error: deptError } = useDepartments(jwtToken);
+
   const [employeeId, setEmployeeId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [title, setTitle] = useState('');
   const [department, setDepartment] = useState('');
-  const [departments, setDepartments] = useState([]); 
   const [photograph, setPhotograph] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/v1/departments', {
-          headers: {
-            Authorization: `Bearer ${jwtToken || localStorage.getItem('jwtToken')}`,
-          },
-        });
-        console.log('Departments API response:', response.data);
-        if (response.data && Array.isArray(response.data)) {
-          setDepartments(response.data); 
-        } else {
-          throw new Error('Invalid response format for departments');
-        }
-      } catch (err) {
-        console.error('Error fetching departments:', err);
-        setError('Failed to load departments. Please try again.');
-      }
-    };
-
-    fetchDepartments();
-
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview, jwtToken]);
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload a valid image file.');
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        alert('File size must be less than 2MB.');
-        return;
-      }
-      setPhotograph(file);
-      setImagePreview(URL.createObjectURL(file));
+    const validationError = validateFile(file);
+    if (validationError) {
+      alert(validationError);
+      return;
     }
+    setPhotograph(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const resetForm = () => {
@@ -85,21 +55,10 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
     formData.append('photograph', photograph);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/employees',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${jwtToken || localStorage.getItem('jwtToken')}`,
-          },
-        }
-      );
-
-      onSave(response.data);
+      const response = await saveEmployee(formData, jwtToken);
+      onSave(response);
       resetForm();
     } catch (err) {
-      console.error('Error saving employee:', err);
       setError(err.response?.data?.message || 'Failed to save employee. Please try again.');
     } finally {
       setLoading(false);
@@ -114,6 +73,7 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
         </div>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {deptError && <div className="alert alert-danger">{deptError}</div>}
           <form onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-md-6">
@@ -146,6 +106,8 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
                     onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Email</label>
                   <input
@@ -156,8 +118,6 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
                     required
                   />
                 </div>
-              </div>
-              <div className="col-md-6">
                 <div className="mb-3">
                   <label className="form-label">Title</label>
                   <input
@@ -169,44 +129,33 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
                   />
                 </div>
                 <div className="mb-3">
-                    <label className="form-label">Department</label>
-                    <select
-                        className="form-select"
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        required
-                    >
-                        <option value="" disabled>
-                        Select a department
-                        </option>
-                        {departments.map((dept) => (
-                        <option key={dept.departmentId} value={dept.departmentName}>
-                            {dept.departmentName}
-                        </option>
-                        ))}
-                    </select>
-                    </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Photograph</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={handleFileChange}
-                    accept="image/*"
+                  <label className="form-label">Department</label>
+                  <DepartmentSelect
+                    departments={departments}
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
                   />
-                  {imagePreview && (
-                    <div className="mt-3 text-center">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="img-thumbnail"
-                        style={{ maxHeight: '150px' }}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Photograph</label>
+              <input
+                type="file"
+                className="form-control"
+                onChange={handleFileChange}
+                accept="image/*"
+              />
+              {imagePreview && (
+                <div className="mt-3 text-center">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="img-thumbnail"
+                    style={{ maxHeight: '150px' }}
+                  />
+                </div>
+              )}
             </div>
             <div className="text-center mt-4">
               <button
@@ -224,4 +173,4 @@ const EmployeeForm = ({ onSave = () => {}, jwtToken }) => {
   );
 };
 
-export default EmployeeForm;
+export default AddEmployeeForm;

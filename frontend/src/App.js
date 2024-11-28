@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from './components/LoginPage';
-import Dashboard from './components/Dashboard';
-import AddEmployee from './components/AddEmployee';
-import EmployeeList from './components/EmployeeList';
-import EditEmployee from './components/EditEmployee';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import AddEmployee from './pages/AddEmployee';
+import EmployeeList from './pages/EmployeeList';
+import EditEmployee from './pages/EditEmployee';
 
 const router = createBrowserRouter([
   {

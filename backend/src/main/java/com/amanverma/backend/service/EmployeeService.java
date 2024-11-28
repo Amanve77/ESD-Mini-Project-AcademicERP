@@ -27,7 +27,7 @@ public class EmployeeService {
 
         int currentCount = department.getCurrentCount();
         if(currentCount >= department.getCapacity()){
-            return "Department capacity exceeded. Cannot add more employees.";
+            throw new RuntimeException("Department capacity exceeded. Cannot add more employees.");
         }
         else {
             departmentService.increaseDepartmentCapacity(department);
@@ -59,7 +59,7 @@ public class EmployeeService {
         Department newDepartment = departmentService.getByName(request.getDepartment());
         int currentCount = newDepartment.getCurrentCount();
         if(currentCount >= newDepartment.getCapacity()){
-            return "Department capacity exceeded. Cannot add more employees.";
+            throw new RuntimeException("Department capacity exceeded. Cannot add more employees.");
         }
         else {
             departmentService.updateDepartmentCapacity(oldDepartment, newDepartment);
